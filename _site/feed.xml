@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-07-10T22:41:49+08:00</updated><id>http://localhost:4000/</id><title type="html">Panicall’s Blog</title><subtitle>security knowledge, vulnerabilities details, fuzzing method, etc.</subtitle><entry><title type="html">CVE-2018-4283: IOGraphics, OOB Read</title><link href="http://localhost:4000/vulnerabilities/2018/07/10/CVE-2018-4283.html" rel="alternate" type="text/html" title="CVE-2018-4283: IOGraphics, OOB Read" /><published>2018-07-10T21:31:00+08:00</published><updated>2018-07-10T21:31:00+08:00</updated><id>http://localhost:4000/vulnerabilities/2018/07/10/CVE-2018-4283</id><content type="html" xml:base="http://localhost:4000/vulnerabilities/2018/07/10/CVE-2018-4283.html">&lt;h1 id=&quot;description&quot;&gt;Description&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-07-10T23:00:05+08:00</updated><id>http://localhost:4000/</id><title type="html">Panicall’s Blog</title><subtitle>security knowledge, vulnerabilities details, fuzzing method, etc.</subtitle><entry><title type="html">CVE-2018-4283: IOGraphics, OOB Read</title><link href="http://localhost:4000/vulnerabilities/2018/07/10/CVE-2018-4283.html" rel="alternate" type="text/html" title="CVE-2018-4283: IOGraphics, OOB Read" /><published>2018-07-10T21:31:00+08:00</published><updated>2018-07-10T21:31:00+08:00</updated><id>http://localhost:4000/vulnerabilities/2018/07/10/CVE-2018-4283</id><content type="html" xml:base="http://localhost:4000/vulnerabilities/2018/07/10/CVE-2018-4283.html">&lt;h1 id=&quot;description&quot;&gt;Description&lt;/h1&gt;
 &lt;p&gt;There is an OOB read vulnerability exists in IOGraphics due to wrong create/release logic.&lt;/p&gt;
 
 &lt;h1 id=&quot;environment&quot;&gt;Environment&lt;/h1&gt;
@@ -8,11 +8,42 @@
 &lt;/ul&gt;
 
 &lt;h1 id=&quot;analysis&quot;&gt;Analysis&lt;/h1&gt;
-&lt;p&gt;In IDState class, the CreateID method can create IDs in different ways according to parameter ‘options’:&lt;br /&gt;
-&lt;img src=&quot;/_asserts/createid.png&quot; alt=&quot;createid&quot; /&gt;&lt;br /&gt;
-It can either call reserveRequested or allocID. The 2 methods store id into different queues, the fSpecifiedIDsData and fRetainIDsData.
-But when release the previous created id, the logic about choosing queue doesn’t match the one in CreateID. The logic exists in method locateID:&lt;br /&gt;
-&lt;img src=&quot;/_asserts/locateid.png&quot; alt=&quot;createid&quot; /&gt;&lt;br /&gt;
-It chooses queue according to the id value , not the options any more. So we can go to the wrong queue with a very big id value, e.g. -2. Finally the function getID uses the very big id value as its index:&lt;br /&gt;
-&lt;img src=&quot;http://localhost:4000/_asserts/getid.png&quot; alt=&quot;createid&quot; /&gt; &lt;br /&gt;
-Here we get out of boundary read in function getBytesNoCopy. This may lead to LPE, memory corruption …&lt;/p&gt;</content><author><name></name></author><category term="CVE" /><summary type="html">Description There is an OOB read vulnerability exists in IOGraphics due to wrong create/release logic.</summary></entry></feed>
+&lt;p&gt;In IDState class, the CreateID method can create IDs in different ways according to parameter ‘options’:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    IOReturn createID(const bool taskOwned, const IOOptionBits options,
+                      const IOAccelID requestedID, IOAccelID *idOutP)
+    {
+        const uint32_t taskOwnedMask = (taskOwned) ? kTaskOwned : 0;
+        IOReturn ret;
+        if (kIOAccelSpecificID &amp;amp; options)
+            ret = reserveRequested(taskOwnedMask, requestedID, idOutP);
+        else
+            ret = allocID(taskOwnedMask, idOutP);
+        return ret;
+    }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;It can either call reserveRequested or allocID. The 2 methods store id into different queues, the fSpecifiedIDsData and fRetainIDsData.
+But when release the previous created id, the logic of choosing queue doesn’t match the one in CreateID. The logic exists in method locateID:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    IDDataDecode locateID(IOAccelID id)
+    {
+        IDDataDecode ret = {
+            .fIDsData = fRetainIDsData,
+            .fArrayInd = id - kAllocatedIDBase,
+        };
+        if (static_cast&amp;lt;unsigned&amp;gt;(id) &amp;lt; kAllocatedIDBase) {
+            ret.fIDsData = fSpecifiedIDsData;
+            ret.fArrayInd = int2zz(id);
+        }
+        ret.fUP = getID(ret.fIDsData, ret.fArrayInd);
+        return ret;
+    }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;It chooses queue according to the id value , not the options any more. So we can go to the wrong queue with a very big id value, e.g. -2. Finally the function getID uses the very big id value as its index:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Range checked lookup of a uint32_t within a data
+inline uint32_t *getID(OSData *data, int index)
+{
+    const uint32_t *uP = static_cast&amp;lt;const uint32_t*&amp;gt;(
+            data-&amp;gt;getBytesNoCopy(index * sizeof(*uP), sizeof(*uP)));
+    return const_cast&amp;lt;uint32_t*&amp;gt;(uP);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Here we get out of boundary read in function getBytesNoCopy.&lt;/p&gt;</content><author><name></name></author><category term="CVE" /><summary type="html">Description There is an OOB read vulnerability exists in IOGraphics due to wrong create/release logic.</summary></entry></feed>
