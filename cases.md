@@ -7,6 +7,7 @@ title: Cases
 # Before 2018
 See [this](http://fuzzer.cn/vulnerability/) for reference.
 
+-------------
 
 # 2018
 
