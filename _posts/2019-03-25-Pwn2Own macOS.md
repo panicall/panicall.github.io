@@ -11,7 +11,7 @@
 
 ​	这是一个因堆内存未初始化造成内容泄漏的漏洞，在iOS 12.1以及macOS 10.14.1中修复了，这个漏洞可以用来泄漏ipc_port内核对象的地址。接下来我们来看看这个漏洞的详细信息。
 
-​	这个漏洞发生在sysctl_procargsx函数中：[image-20190324221646704](/assets/img/image-20190324221646704.png)
+​	这个漏洞发生在sysctl_procargsx函数中：[image-20190324221646704]({{site.url}}{{site.baseurl}}/assets/img/image-20190324221646704.png)
 
 ​	在位置(a)处，p->p_argslen的值一般是0x300左右，所以当我们传入的参数arg_size （可控参数）为0x200时，round_page函数不会被调用。紧接着这个函数调用kmem_alloc分配了一块内核内存，记为copy_start，大小是round_page(arg_size)，也就是一个页面大小，注意分配出来的内存没有清零。同时记录这块内存的结束位置为copy_end。分配成功后，该函数又调用了vm_map_copyin把进程的启动参数信息arg_addr拷贝到了一个临时变量tmp中。
 
