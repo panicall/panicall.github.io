@@ -1,3 +1,9 @@
+---
+layout: default
+author: juwei lin
+date: 2018-11-13 15:16:00 +0800
+---
+
 # Description
 necp module in BSD has a fatal type confusion problem that leads to multiple vulnerabilities. One of these cases is arbitrary-address-write.
 
@@ -137,4 +143,7 @@ bool necp_write() {
     
     return bret;
 }
-```
+```  
+
+
+  [Back Home]({{site.url}}{{site.baseurl}})

@@ -1,9 +1,7 @@
 ---
-layout: post
-title:  "CVE-2018-xxxx: BSD, heap leak"
-date:   2018-07-10 21:31:00 +0800
-categories: vulnerabilities
-tags: CVE
+layout: default
+author: juwei lin
+date: 2018-11-13 15:16:00 +0800
 ---
 
 
@@ -260,3 +258,8 @@ int main()
 
 PoC binary is also provided, see attched files.
 
+# how did Apple fix this?
+In 10.14.1, Apple added calling bzero.  
+![heap_free_fix]({{site.url}}{{site.baseurl}}/res/heap_leak.png)  
+
+  [Back Home]({{site.url}}{{site.baseurl}})
