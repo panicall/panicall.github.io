@@ -76,14 +76,14 @@ The following experiments are done in ubuntu 18.04.
      * include/linux/kernel.h
      * arch/arm64/include/asm/kasan.h
      * ...
-    
+   
    * how it works
      kasan relies on `shadow memory` which is eighth of the kernel memory space. Each shadow byte can represent 8 memory bytes. If the shadow byte is not 0 or pre-filled size related value, kasan reports catching a UAF, memory OOB read/write, double free or some other memory issue. kasan works for both heap and stack.  
 
 2. kasan insight
    * **for detecting OOB memory issue**   
      kasan allocates additional redzone pages(left and right) for applied memory.    
-     ![kasan_oob]({{site.url}}{{site.baseurl}}/res/kasan_oob.png)
+     ![kasan_oob](/images/res/kasan_oob.png)
      All virtual memory has its own mapped shadow memory, every 8 virtual memory bytes map to 1 shadow byte. When kasan is on, new allocated memory has left and right redzone. Redzone shadow memory is poisoned so that if you call memory operations such as memcpy or even simply bytes read/write, which access redzone, kasan can catch this illegal action.  
 
      For example, `memcpy` with kasan on is :
@@ -96,13 +96,13 @@ The following experiments are done in ubuntu 18.04.
 
 	    return __memcpy(dest, src, len);
     }
-     ```  
+     ```
      memcpy is just one trigger point that can trigger kasan check. check_memory_region checks whether the target memory scope is poisoned. Here, memcpy checks whether memory of [src, len] and [dst, len] is poisoned, if poisoned, kasan reports this illegal operation and panic the kernel.  
      As for memory poison check, it actually checks its shadow memory. All the shadow bytes of the memory is checked:
      * if it is 0, it is legal.
      * if it is (memory size & 7), it is legal.
      * all other values are illegal, e.g. 0xfe  
-    
+   
      There are many other trigger points, almost all the memory opertion can be a point. In Android kernel, there exists:
      * memcpy
      * memmove
@@ -112,23 +112,24 @@ The following experiments are done in ubuntu 18.04.
 
    * **for detecting double free/UAF**  
     when new memory is allocated, if the size is aligned with 8:  
-    ![kasan_normal1]({{site.url}}{{site.baseurl}}/res/kasan_normal1.png)  
-    
+    ![kasan_normal1](/images/res/kasan_normal1.png)  
+   
     if the size is not aligned,  
-    ![kasan_normal1]({{site.url}}{{site.baseurl}}/res/kasan_normal2.png)   
+    ![kasan_normal1](/images/res/kasan_normal2.png)   
     The last shadow byte is set to size&7.  
-      
+   
     when the memory is freed, the shadow memory changes to:  
-    ![kasan_normal1]({{site.url}}{{site.baseurl}}/res/kasan_free.png)   
+    ![kasan_normal1](/images/res/kasan_free.png)   
     Now the shadow bytes all become 0xff(different status has different value), if UAF/double free occurs, memory opertion triggers kasan check, and the shadow bytes are illegal now, kasan gives report and panics the kernel.   
     In android kernel, the status can be:
+   
     ```C
     #define KASAN_FREE_PAGE         0xFF  /* page was freed */
     #define KASAN_PAGE_REDZONE      0xFE  /* redzone for kmalloc_large allocations */
     #define KASAN_KMALLOC_REDZONE   0xFC  /* redzone inside slub object */
     #define KASAN_KMALLOC_FREE      0xFB  /* object was freed (kmem_cache_free/kfree) */
-    #define KASAN_GLOBAL_REDZONE    0xFA  /* redzone for global variable */
-
+ #define KASAN_GLOBAL_REDZONE    0xFA  /* redzone for global variable */
+   
     /*
     * Stack redzone shadow values
     * (Those are compiler's ABI, don't change them)
@@ -138,12 +139,8 @@ The following experiments are done in ubuntu 18.04.
     #define KASAN_STACK_RIGHT       0xF3
     #define KASAN_STACK_PARTIAL     0xF4
     #define KASAN_USE_AFTER_SCOPE   0xF8
-    ```
+   ```
   
 3. vmlinux with kasan/kcov ON  
-   vmlinux can be found [here](https://adc.github.trendmicro.com/CoreTech-MARS/allexp/tree/master/resource/bin/android_kernel/goldfish_4.9_dev/x86_64/ksan_kcov)
-
-
-  
-  [Back Home]({{site.url}}{{site.baseurl}})
+   vmlinux can be found [here]
 

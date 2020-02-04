@@ -60,7 +60,7 @@ Other important reference materials:
    Please be noticed that, if missing LLVMgold.so and libstd++.so.1, please copy these 2 files into /usr/lib from your toolchain.
 
 6. vmlinxu with CFI ON  
-   After successfully build, vmlinux can be found [here](https://adc.github.trendmicro.com/CoreTech-MARS/allexp/tree/master/resource/bin/android_kernel/goldfish_4.9_dev/arm64/cfi) .
+   After successfully build, vmlinux can be found here .
 
 ## CFI in Android 
 ### overview  
@@ -73,9 +73,9 @@ CFI will do runtime check in the above 3 type positions. In current Android kern
 
 ### insight
 Android kernel CFI(Forward-Edge CFI) consists of two parts: fast path check and slow path check. See the following picture as an example.  
-![kernel_cfi]({{site.url}}{{site.baseurl}}/res/kernel_cfi.png)  
+![kernel_cfi](/images/res/kernel_cfi.png)  
 This picture illustrates how a function that takes an object and calls a virtual function gets translated into assembly with and without CFI. Actually each check point(foo function here) has its own instrumented unique range value. Another example from my compiled vmlinux:  
-![kernel_cfi]({{site.url}}{{site.baseurl}}/res/vmlinux_cfi.png)  
+![kernel_cfi](/images/res/vmlinux_cfi.png)  
 The above picture describes the cfi implementation in Android kernel. It also includes fast path check and slow path check. Fast path check determines if the pointer falls within an expected range of addresses of compatible vtables. Failing that, execution falls through to a slow path that does a more extensive check for valid classes that are defined in other shared libraries. The slow path will abort execution if the vtable pointer points to an invalid target.  
 The relationship between fast check and slow check can be found [here](https://clang.llvm.org/docs/ControlFlowIntegrityDesign.html):  
 ```
@@ -90,7 +90,7 @@ if (!InlinedFastCheck(f))
 call *f
 ```  
 CallSiteTypeId is the `id` you can see in the above picture. It is for slowpath check. Fast path check is simple which just check the alignment and range. The above picture equals to the following:  
-![cfi_check]({{site.url}}{{site.baseurl}}/res/cfi_check.png)  
+![cfi_check](/images/res/cfi_check.png)  
 v4 is a function pointer in array fn_handler, e.g. fn_show_ptregs which locates at 0xFFFF000008E322BC, dummycon_deinit is a value of 0xFFFF000008E322A0. So v4-dummycon_deinit = 0xFFFF000008E322BC - 0xFFFF000008E322A0 = 0x1C, which satisfy both alignment and range check.  
 If failed, slowpath check works. Slow path check is implemented in kernel as:  
 `void __cfi_slowpath(uint64 CallSiteTypeId, void *TargetAddr)`  
@@ -209,4 +209,3 @@ It firstly uses id to search the proper entry and then check if the entry's func
 
   
   
-  [Back Home]({{site.url}}{{site.baseurl}})

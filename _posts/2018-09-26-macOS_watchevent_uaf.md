@@ -321,7 +321,7 @@ At (4.a), ee_proc value points to freed proc_t(killed child process). At (4.b) a
 ## How does Apple fix it?
 Apple adds fo_type check in sem_close function to filter event types. If not sem event, it exits. This vulnerability only supports socket or pipe type event so that pipe event will be filtered.  
 
-![sem_close_fix]({{site.url}}{{site.baseurl}}/res/cve-2018-4435_sem_close_fix.png)  
+![sem_close_fix](/images/res/cve-2018-4435_sem_close_fix.png)  
 
 
 ## Q & A
@@ -337,5 +337,3 @@ Yes, see the root cause analysis.
 ### Vulnerable software and hardware
 macOS 10.14 and all before 
 
-
-  [Back Home]({{site.url}}{{site.baseurl}})

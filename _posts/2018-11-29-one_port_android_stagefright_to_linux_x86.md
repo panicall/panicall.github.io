@@ -36,8 +36,7 @@ date: 2018-11-29 18:08:00 +0800
   
 ## Modify Stagefright
 1. download AOSP
-2. apply [patch](https://adc.github.trendmicro.com/CoreTech-MARS/allexp/blob/master/PanicAndroid/stagefright/stagefright_av.patch). If apply failure, please update the patch file according to your downloaded AOSP.  
+2. apply patch. If apply failure, please update the patch file according to your downloaded AOSP.  
 3. compile
     
 
-  [Back Home]({{site.url}}{{site.baseurl}})

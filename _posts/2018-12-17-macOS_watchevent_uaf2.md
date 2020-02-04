@@ -11,7 +11,7 @@ This vulnerability exists in macOS XNU module. There is a pointer in kernel evp 
 
 With this vulnerability, attacker can use UAF exploit technique to execute arbitrary code in the kernel to achieve EoP.
 
-Actually this is another way to trigger [CVE-2018-4435](https://adc.github.trendmicro.com/pages/CoreTech-MARS/allexp/posts/2018_09_26_macOS_watchevent_uaf.html). You can also find how Apple fixed CVE-2018-4435 in that article .  
+Actually this is another way to trigger CVE-2018-4435. You can also find how Apple fixed CVE-2018-4435 in that article .  
 If you are familiar with CVE-2018-4435, you can directly jump into section "kill the process and leave the pointer dangling".  
 
 ## Root Cause Analysis

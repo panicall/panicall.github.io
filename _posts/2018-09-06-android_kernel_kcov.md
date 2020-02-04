@@ -19,7 +19,7 @@ We can enable KCOV to trace PCs and Data. In the following article, I will intro
 ## KCOV(Tracing PCs) in Android Kernel
 ### Build a kernel with KCOV ON
 Skip building kernel with KCOV ON, please refer to [KASAN in Anroid Kernel](./posts/2018_09_06_android_kernel_kasan.html).  
-vmlinux can be found [here](https://adc.github.trendmicro.com/CoreTech-MARS/allexp/tree/master/resource/bin/android_kernel/goldfish_4.9_dev/x86_64/ksan_kcov)
+vmlinux can be found here.
 ### KCOV(Tracing PCs) in Android source code
 ```C
 /*
@@ -50,6 +50,3 @@ EXPORT_SYMBOL(__sanitizer_cov_trace_pc);
 
 ### KCOV(Tracing PCs) in Android bin
 ![kcov_bin](/images/res/kcov.png)  
-
-
-  [Back Home]({{site.url}})

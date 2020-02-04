@@ -28,8 +28,8 @@ it generates a result file named `drcov.test.15822.0000.proc.log`.
 
 2. Use lighthouse to show the result
 [lighthouse](https://github.com/gaasedelen/lighthouse) can render the result inside IDA or Binary Ninja.
-![test_dynamorio_1]({{site.url}}{{site.baseurl}}/res/test_dynamorio_1.png) 
-![test_dynamorio_2]({{site.url}}{{site.baseurl}}/res/test_dynamorio_2.png) 
+![test_dynamorio_1](/images/res/test_dynamorio_1.png) 
+![test_dynamorio_2](/images/res/test_dynamorio_2.png) 
 
 ### Pin
 Install Pin & CodeCoverage under the [instructions](https://github.com/gaasedelen/lighthouse/tree/master/coverage/pin).
@@ -167,8 +167,8 @@ Another way is to generate the report at source code function level:
 ```
 mexp@staging-mexp226:~/Android$ llvm-cov show /home/mexp/Android/out/target/product/generic_x86/symbols/system/lib/libstagefright_soft_avcdec.so -instr-profile=default.profdata --format html > /data/coverage.html
 ```
-it generates the [html](https://adc.github.trendmicro.com/CoreTech-MARS/allexp/blob/master/docs/res/coverage.html) for your review at function level.  
-![coverage_html]({{site.url}}{{site.baseurl}}/res/coverage_html.png)  
+it generates the html for your review at function level.  
+![coverage_html](/images/res/coverage_html.png)  
 
 #### 4. Exporting coverage data  
 Coverage data can be exported into JSON using the llvm-cov export sub-command. There is a comprehensive reference which defines the structure of the exported data at a high level in the llvm-cov source code.  
@@ -308,5 +308,3 @@ branch  1 taken 0%
 
 #### 4. Use lcov and genhtml to generate the html file for review
 [skip](http://logan.tw/posts/2015/04/28/check-code-coverage-with-clang-and-lcov/).
-
-  [Back Home]({{site.url}}{{site.baseurl}})
