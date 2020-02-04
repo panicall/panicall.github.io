@@ -452,8 +452,6 @@ public class WorkContextFormatInfo {
 需要注意的是，公开信息显示，到达`WorkContextXmlInputAdapter`的URL入口除了之前CVE-2017-10271 PoC展示的`wls-wsat/xxx`，如`wls-wsat/CoordinatorPortType`; 还有`_async/xxx`，如`_async/AsyncResponseService`。
 
 ## 参考
-
-[1]: https://www.cnvd.org.cn/webinfo/show/4989	"Oracle WebLogic wls9-async公告"
-[2]: http://www.secwk.com/2019/05/05/4006/	"WebLogic RCE(CVE-2019-2725)漏洞之旅"
-[3]: https://xz.aliyun.com/t/5024	"Weblogic 远程命令执行漏洞分析(CVE-2019-2725)及利用payload构造详细解读"
-
+1. "Oracle WebLogic wls9-async公告" _https://www.cnvd.org.cn/webinfo/show/4989    
+2. "WebLogic RCE(CVE-2019-2725)漏洞之旅" _http://www.secwk.com/2019/05/05/4006/ 
+3. "Weblogic 远程命令执行漏洞分析(CVE-2019-2725)及利用payload构造详细解读" _https://xz.aliyun.com/t/5024   
