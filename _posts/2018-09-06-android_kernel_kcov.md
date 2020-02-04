@@ -14,7 +14,7 @@ We can enable KCOV to trace PCs and Data. In the following article, I will intro
 
 ## Tracing PCs
 > With -fsanitize-coverage=trace-pc the compiler will insert __sanitizer_cov_trace_pc() on every edge. With an additional ...=trace-pc,indirect-calls flag __sanitizer_cov_trace_pc_indirect(void *callee) will be inserted on every indirect call. These callbacks are not implemented in the Sanitizer run-time and should be defined by the user. This mechanism is used for fuzzing the Linux kernel (https://github.com/google/syzkaller).  
-  
+
 
 ## KCOV(Tracing PCs) in Android Kernel
 ### Build a kernel with KCOV ON
@@ -49,7 +49,7 @@ EXPORT_SYMBOL(__sanitizer_cov_trace_pc);
 ```
 
 ### KCOV(Tracing PCs) in Android bin
-![kcov_bin]({{site.url}}{{site.baseurl}}/images/res/kcov.png)  
+![kcov_bin](/images/res/kcov.png)  
 
 
-  [Back Home]({{site.url}}{{site.baseurl}})
+  [Back Home]({{site.url}})
