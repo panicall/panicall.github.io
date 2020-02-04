@@ -4,7 +4,7 @@ author: juwei lin
 date: 2019-02-15 09:52:00 +0800
 ---
 
-# Apple XNU UAF [INTERNAL]
+# Apple XNU UAF 
 
 ## Overview
 This is a XNU Use-after-free case, after calling `os_reason_free` in `reap_child_locked`, child->p_exit_reason becomes a dangling pointer. In normal condition, reap_child_locked will remove the child proc off the parent proc list thus we cannot call reap_child_locked twice, but reap_child_locked is not always thread safe, we can use 2 threads to do race condition.  

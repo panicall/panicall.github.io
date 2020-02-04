@@ -4,7 +4,7 @@ author: juwei lin
 date: 2019-02-02 10:16:00 +0800
 ---
 
-# Apple XNU Stack Memroy Leak [INTERNAL]
+# Apple XNU Stack Memroy Leak 
 
 ## Overview
 This is a kernel stack memory leak issue. This issue exists in function `_kernelrpc_mach_port_get_attributes_trap`.  

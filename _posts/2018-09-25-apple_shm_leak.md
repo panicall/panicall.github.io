@@ -4,7 +4,7 @@ author: juwei lin
 date: 2018-09-25 15:47:00 +0800
 ---
 
-# CVE-2018-4447 Apple XNU kernel memory leak vulnerability [INTERNAL] 
+# CVE-2018-4447 Apple XNU kernel memory leak vulnerability 
 
 ## Overview
 This vulnerability exists in BSD share memory module(shm*). shm allocates memory during module initialization without memset, which leaves some fields of the memory uninitialized. And one shm api can read the allocated memory with uninitialized fields from kernel to usermode leading to memory leak.  

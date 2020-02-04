@@ -4,7 +4,7 @@ author: juwei lin
 date: 2019-02-02 10:16:00 +0800
 ---
 
-# Apple APFS copyin assert failure case [INTERNAL]
+# Apple APFS copyin assert failure case 
 
 ## Overview
 There is an assert failure case in function `AppleAPFSUserClient::methodContainerEFIGetVersion`.  

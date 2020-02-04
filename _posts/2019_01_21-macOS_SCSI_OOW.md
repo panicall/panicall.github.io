@@ -4,7 +4,7 @@ author: juwei lin
 date: 2019-01-21 15:34:00 +0800
 ---
 
-# Apple macOS SCSITaskUserClient Out of Boundary Write [INTERNAL]
+# Apple macOS SCSITaskUserClient Out of Boundary Write 
 
 ## Overview
 This vulnerability existsd in I/O Kit module SCSITaskUserClient. 

@@ -4,7 +4,7 @@ author: junzhi lu, juwei lin
 date: 2018-11-28 10:38:00 +0800
 ---
 
-# Apple AMDRadeonX4000 s_new_resource Out-Of-Bound memory reading [INTERNAL]
+# Apple AMDRadeonX4000 s_new_resource Out-Of-Bound memory reading 
 
 ## Overview
 

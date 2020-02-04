@@ -4,7 +4,7 @@ author: juwei lin
 date: 2018-12-17 11:23:00 +0800
 ---
 
-# macOS XNU watchevent use-after-free vulnerability [INTERNAL]
+# macOS XNU watchevent use-after-free vulnerability 
 
 ## Overview
 This vulnerability exists in macOS XNU module. There is a pointer in kernel evp object which points to a process(proc_t), but under some cases, the pointer is not cleared after the related process already exits.

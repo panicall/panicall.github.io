@@ -4,7 +4,7 @@ author: juwei lin
 date: 2018-09-29 22:00:00 +0800
 ---
 
-# macOS IOUSBFamily Local DOS Bug [INTERNAL]
+# macOS IOUSBFamily Local DOS Bug 
 
 ## Overview
 There are some functions in kernel calling `panic()`. One of them is `IOUSBInterfaceUserClient::LowLatencyPrepareBuffer`.  

@@ -4,7 +4,7 @@ author: juwei lin
 date: 2018-12-28 16:44:00 +0800
 ---
 
-# Android 9 Remote DOS in libmp4extractor [INTERNAL]
+# Android 9 Remote DOS in libmp4extractor 
 
 ## Overview
 In libmp4extractor module, there are many functions calling macro `CHECKxxx` to verify if it is healthy now. Parsing some malformed mp4 file may trigger this CHECK and lead to process mediaextractor abort.  
