@@ -49,7 +49,7 @@ EXPORT_SYMBOL(__sanitizer_cov_trace_pc);
 ```
 
 ### KCOV(Tracing PCs) in Android bin
-![kcov_bin]({{site.url}}{{site.baseurl}}/res/kcov.png)  
+![kcov_bin]({{site.url}}{{site.baseurl}}/images/res/kcov.png)  
 
 
   [Back Home]({{site.url}}{{site.baseurl}})
