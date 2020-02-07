@@ -1,8 +1,3 @@
----
-layout: default
-author: @panicaII
-date: 2020-02-06 22:34:00 +0800
----
 
 # Weblogic T3反序列化之三： JRMP
 
