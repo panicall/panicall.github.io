@@ -7,6 +7,8 @@ title: WebApp
 
 # 2020
 
+[2020-02-06 Weblogic T3反序列化之三： JRMP](/_posts/2020-02-06-Weblogic T3反序列化之三： JRMP.md)
+
 [2020-01-28 Weblogic T3反序列化之二： CVE_2016_0638](/_posts/2020-01-27-Weblogic反序列化开篇：CVE_2015_4852.md)
 
 [2020-01-27 Weblogic反序列化开篇：CVE_2015_4852](/_posts/2020-01-27-Weblogic反序列化开篇：CVE_2015_4852.md)
