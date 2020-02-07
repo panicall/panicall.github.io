@@ -1,7 +1,5 @@
 #XMLDecoder RCE变种
-2020/1/31 @PanicaII
-
-##描述
+##0x00 描述
 
 继前一篇《XMLDecoder RCE起源》介绍的CVE-2017-3506后，官方发布了补丁，但是补丁过于简单，于是很快出现了CVE-2017-10271；官方补完CVE-2017-10271后，又出现了CVE-2019-2725，于是又发补丁。
 
@@ -9,9 +7,9 @@
 
 
 
-## 变种一： CVE-2017-10271
+## 0x01 变种一： CVE-2017-10271
 
-### CVE-2017-3506补丁的问题
+### 1. CVE-2017-3506补丁的问题
 
 先看看3506的补丁：
 
@@ -51,13 +49,13 @@ private void validate(InputStream is) {
 }
 ```
 
-信息 1
+​																					*信息 1*
 
 这个补丁主要是在`WorkContextXmlInputAdapter`构造函数里面增加了一个验证的代码，验证的逻辑也非常简单：使用SAX解析XML，只要发现有标签是`object`直接异常退出。
 
 这个补丁针对之前3506的PoC是有效的，但是后来有人发现了新的XML书写方法，可以绕过这个补丁。
 
-### PoC
+### 2. PoC
 
 Post URL: http://172.16.100.97:7001/wls-wsat/CoordinatorPortType
 
@@ -78,7 +76,7 @@ Post Body:
         <soapenv:Body/>
     </soapenv:Envelope>
 ```
-信息 2
+​																							*信息 2*
 
 可以看到这个PoC和CVE-2017-3506的唯一区别就是，将`object`标签换成了`void`。
 
@@ -104,15 +102,15 @@ final class VoidElementHandler extends ObjectElementHandler {
 }
 ```
 
-信息 3
+​																				*信息 3*
 
 可以看到`void`标签的处理方法就是继承自`object`标签，所以才会有相同的效果。
 
 ### 
 
-## 变种二： CVE-2019-2725
+## 0x02 变种二： CVE-2019-2725
 
-### CVE-2017-10271补丁的问题
+### 1. CVE-2017-10271补丁的问题
 
 先看看补丁代码：
 
@@ -217,11 +215,11 @@ public WorkContextXmlInputAdapter(InputStream var1) {
                                 }
 ```
 
-信息 4
+​																					*信息 4*
 
 补丁限制了标签名不能是`object`,`new`,`method`。并且，如果是`void`，那么后面跟的属性名只能是`index`；如果是`array`，后面可以跟`class`属性，但是`class`的类型只能是`byte`，并且`array`后面如果有长度`length`，那么`length`的值也做了限制（<MAXARRAYLENGTH），且整个xml的`length`累加值也做了限制（<OVERALLMAXARRAYLENGTH）。
 
-### PoC
+### 2. PoC
 
 根据公开信息`参考 3`,使用了`class`标签以及`oracle.toplink.internal.sessions.UnitOfWorkChangeSet`。
 
@@ -240,7 +238,7 @@ public UnitOfWorkChangeSet(byte[] bytes) throws IOException, ClassNotFoundExcept
 }
 ```
 
-信息 5
+​																					*信息 5*
 
 构造函数直接将输入的数据反序列化，且满足array+byte限制，所以只要能找到一个可用的gadget即可，可以参考ysoserial项目。
 
@@ -274,13 +272,13 @@ public UnitOfWorkChangeSet(byte[] bytes) throws IOException, ClassNotFoundExcept
     }
 ```
 
-信息 7
+​																				*信息 7*
 
 相当的简单粗暴，二次XMLDecoder。
 
 
 
-### 补丁
+### 3. 补丁
 
 参考代码如下：
 
@@ -403,7 +401,7 @@ public final class WorkContextXmlInputAdapter implements WorkContextInput {
     }
 ```
 
-信息 8
+​																				*信息 8*
 
 在CVE-2017-10271的基础上，又加了对标签`class`的限制；另外完整添加了一个新的验证方法：`validateFormat`。`validateFormat`完全是一个白名单验证方法，涵盖了标签、属性名和属性内容。
 
@@ -443,15 +441,15 @@ public class WorkContextFormatInfo {
 }
 ```
 
-信息 9
+​																			*信息 9*
 
 代码还是比较清晰的，和`validate`方法的黑名单有部分重复。白名单的防范方式要更好一些，可防可控。
 
-### 其他
+### 4. 其他
 
 需要注意的是，公开信息显示，到达`WorkContextXmlInputAdapter`的URL入口除了之前CVE-2017-10271 PoC展示的`wls-wsat/xxx`，如`wls-wsat/CoordinatorPortType`; 还有`_async/xxx`，如`_async/AsyncResponseService`。
 
-## 参考
+## 0x03 参考
 1. "Oracle WebLogic wls9-async公告" _https://www.cnvd.org.cn/webinfo/show/4989    
 2. "WebLogic RCE(CVE-2019-2725)漏洞之旅" _http://www.secwk.com/2019/05/05/4006/ 
 3. "Weblogic 远程命令执行漏洞分析(CVE-2019-2725)及利用payload构造详细解读" _https://xz.aliyun.com/t/5024   
